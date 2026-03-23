@@ -1,0 +1,343 @@
+1. ping and nslookup
+madhumita@madhumita-VirtualBox:~$ nslookup www.google.com
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+Name:	www.google.com
+Address: 142.251.221.196
+Name:	www.google.com
+Address: 2001:4860:4828:7700::
+Name:	www.google.com
+Address: 2001:4860:482d:7700::
+Name:	www.google.com
+Address: 2001:4860:4829:7700::
+Name:	www.google.com
+Address: 2001:4860:4826:7700::
+Name:	www.google.com
+Address: 2001:4860:482c:7700::
+Name:	www.google.com
+Address: 2001:4860:4827:7700::
+Name:	www.google.com
+Address: 2001:4860:482a:7700::
+Name:	www.google.com
+Address: 2001:4860:482b:7700::
+
+madhumita@madhumita-VirtualBox:~$ ping www.google.com
+PING www.google.com (142.251.221.196) 56(84) bytes of data.
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=1 ttl=255 time=32.7 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=2 ttl=255 time=25.7 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=3 ttl=255 time=27.5 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=4 ttl=255 time=23.5 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=5 ttl=255 time=23.5 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=6 ttl=255 time=25.4 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=7 ttl=255 time=22.8 ms
+^C
+--- www.google.com ping statistics ---
+7 packets transmitted, 7 received, 0% packet loss, time 6017ms
+rtt min/avg/max/mdev = 22.826/25.861/32.675/3.166 ms
+madhumita@madhumita-VirtualBox:~$ nslookup www.facebook.com
+Server:		127.0.0.53
+Address:	127.0.0.53#53
+
+Non-authoritative answer:
+www.facebook.com	canonical name = star-mini.c10r.facebook.com.
+Name:	star-mini.c10r.facebook.com
+Address: 57.144.56.1
+Name:	star-mini.c10r.facebook.com
+Address: 2a03:2880:f335:1:face:b00c:0:25de
+
+madhumita@madhumita-VirtualBox:~$ ping www.google.com
+PING www.google.com (142.251.221.196) 56(84) bytes of data.
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=1 ttl=255 time=24.8 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=2 ttl=255 time=23.2 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=3 ttl=255 time=23.2 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=4 ttl=255 time=26.0 ms
+64 bytes from pnmaaa-ba-in-f4.1e100.net (142.251.221.196): icmp_seq=5 ttl=255 time=25.4 ms
+^C
+--- www.google.com ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4012ms
+rtt min/avg/max/mdev = 23.180/24.516/25.988/1.149 ms
+
+2. Using wireshark the packets were captured and they were analysed
+
+3. traceroute is used to find the path from source to destination
+Shows the different hops between the source and destination
+madhumita@madhumita-VirtualBox:~$ traceroute www.google.com
+
+5. Vlan trunk
+Trunk -> Contains the point/node where multiple Vlan are connected
+i.e when a switch connects 2 different vlan it forms a trunk
+connecting end devices with switches and configuring the switch for vlans
+
+
+
+6. When the native vlan is changed to vlan 10
+switchport trunk native vlan 10
+
+now Native vlan mismatch occurs
+
+switchport trunk native vlan 1 -> sets to the previous vlan
+
+7. Setup
+A vlan is created namely
+vlan number: 25
+vlan name: Management
+
+ip address is assigned to vlan 25. Default ip address is also assigned
+port access is provided
+then telnet is configured and connection will be established
+telnet, ssh are configured for remote login
+
+8. Switch, VoIP phone Vlan 20 Vlan 10 (data lan) switch port support both voice and data
+Pc ------- IP Phone ---------------- server
+the server has 2 vlans -> Vlan10 for data and Vlan20 for voice
+
+9. Vlan10 and Vlan20 could not communicate as there are different networks
+vlan10
+pc1----->switch------>router
+pc2 ----->switch----/
+vlan 20
+communication between 2Vlan will be established by configuring the switch port connected to the router as a trunk
+[Trunk: Connects 2 Vlans]
+
+10. Using Wireshark the packets were captured. By using tcp packet filter [syn],[syn,ack] and [ack] 3 way handshake packets were learnt.
+
+11. ACL -> rule in router to allow or deny traffic
+In a network ACL works as a security filter
+if we permit pc1 to communicate and deny pc2 to communicate the when we ping from pc2 the router will block and make the communication fail
+while when we try to ping from pc1 it permits the traffic. Similarly the protocols are blocked or permitted as per needs by the extended acl
+
+12. When the devices are permitted and few are blocked then during ping only the permitted can communicate
+
+pc1 [permitted]------\
+	             router------server 
+pc2[denied]---------/
+
+for the above configuration only pc1 can connect to the server while the traffic send by pc2 is blocked.  
+
+13. Extended ACL checks the src ip, dest ip, protocol and port number
+Can block services other than only blocking the complete system from communication
+If we deny HTTP in the ACL then the end device will not have access to the HTTP and similar for other protocols too.
+Extended ACL has control on IP,port and protocol
+
+14. 
+NAT -> private ip to public ip
+
+pc<--------->router<----------->server
+
+Static NAT -> one private ip to one public ip 
+Dynamic Nat -> one private ip to many public ip
+PAT -> Many private ip to one public ip
+
+
+15.
+iperf 
+
+madhumita@madhumita-VirtualBox:~$ iperf3 -s
+-----------------------------------------------------------
+Server listening on 5201 (test #1)
+-----------------------------------------------------------
+Accepted connection from 192.168.56.102, port 38370
+[  5] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 38374
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.00   sec   143 MBytes  1.20 Gbits/sec                  
+[  5]   1.00-2.00   sec   139 MBytes  1.16 Gbits/sec                  
+[  5]   2.00-3.00   sec   137 MBytes  1.15 Gbits/sec                  
+[  5]   3.00-4.00   sec   154 MBytes  1.30 Gbits/sec                  
+[  5]   4.00-5.00   sec   145 MBytes  1.22 Gbits/sec                  
+[  5]   5.00-6.00   sec   145 MBytes  1.22 Gbits/sec                  
+[  5]   6.00-7.00   sec   150 MBytes  1.26 Gbits/sec                  
+[  5]   7.00-8.00   sec   148 MBytes  1.24 Gbits/sec                  
+[  5]   8.00-9.00   sec   150 MBytes  1.26 Gbits/sec                  
+[  5]   9.00-10.00  sec   172 MBytes  1.44 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-10.00  sec  1.45 GBytes  1.25 Gbits/sec                  receiver
+-----------------------------------------------------------
+Server listening on 5201 (test #2)
+-----------------------------------------------------------
+^Ciperf3: interrupt - the server has terminated
+madhumita@madhumita-VirtualBox:~$ iperf3 -s
+-----------------------------------------------------------
+Server listening on 5201 (test #1)
+-----------------------------------------------------------
+Accepted connection from 192.168.56.102, port 33848
+[  5] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 58920
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-1.00   sec  22.6 KBytes   185 Kbits/sec  0.118 ms  0/16 (0%)  
+[  5]   1.00-2.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   2.00-3.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   3.00-4.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   4.00-5.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   5.00-6.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   6.00-7.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   7.00-8.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   8.00-9.00   sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]   9.00-10.00  sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]  10.00-11.00  sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]  11.00-12.00  sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]  12.00-13.00  sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]  13.00-14.00  sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]  14.00-15.00  sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]  15.00-16.00  sec  0.00 Bytes  0.00 bits/sec  0.118 ms  0/0 (0%)  
+[  5]  16.00-16.55  sec  1.41 KBytes  21.0 Kbits/sec  0.695 ms  0/1 (0%)  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-16.55  sec  24.0 KBytes  11.9 Kbits/sec  0.695 ms  0/17 (0%)  receiver
+-----------------------------------------------------------
+Server listening on 5201 (test #2)
+-----------------------------------------------------------
+Accepted connection from 192.168.56.102, port 39344
+[  5] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 39348
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   150 MBytes  1.25 Gbits/sec  450    182 KBytes       
+[  5]   1.00-2.00   sec   140 MBytes  1.18 Gbits/sec  225    191 KBytes       
+[  5]   2.00-3.01   sec   143 MBytes  1.19 Gbits/sec  225    215 KBytes       
+[  5]   3.01-4.00   sec   141 MBytes  1.19 Gbits/sec  216    283 KBytes       
+[  5]   4.00-5.00   sec   139 MBytes  1.17 Gbits/sec  245    216 KBytes       
+[  5]   5.00-6.00   sec   151 MBytes  1.27 Gbits/sec  180    280 KBytes       
+[  5]   6.00-7.01   sec   142 MBytes  1.17 Gbits/sec  182    297 KBytes       
+[  5]   7.01-8.00   sec   162 MBytes  1.38 Gbits/sec  270    194 KBytes       
+[  5]   8.00-9.00   sec   143 MBytes  1.20 Gbits/sec  269    216 KBytes       
+[  5]   9.00-10.00  sec   152 MBytes  1.28 Gbits/sec  243    189 KBytes       
+[  5]  10.00-10.01  sec   256 KBytes   321 Mbits/sec    0    189 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.01  sec  1.43 GBytes  1.23 Gbits/sec  2505             sender
+-----------------------------------------------------------
+Server listening on 5201 (test #3)
+-----------------------------------------------------------
+Accepted connection from 192.168.56.102, port 35440
+[  5] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 35456
+[  7] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 35472
+[ ID][Role] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5][RX-S]   0.00-1.00   sec  88.5 MBytes   741 Mbits/sec                  
+[  7][TX-S]   0.00-1.00   sec  89.4 MBytes   749 Mbits/sec  202    291 KBytes       
+[  5][RX-S]   1.00-2.00   sec  89.9 MBytes   755 Mbits/sec                  
+[  7][TX-S]   1.00-2.00   sec  89.2 MBytes   749 Mbits/sec  116    250 KBytes       
+[  5][RX-S]   2.00-3.00   sec  82.8 MBytes   692 Mbits/sec                  
+[  7][TX-S]   2.00-3.00   sec  93.0 MBytes   777 Mbits/sec   86    253 KBytes       
+[  5][RX-S]   3.00-4.00   sec  89.8 MBytes   754 Mbits/sec                  
+[  7][TX-S]   3.00-4.00   sec  87.2 MBytes   733 Mbits/sec  135    259 KBytes       
+[  5][RX-S]   4.00-5.00   sec  82.2 MBytes   690 Mbits/sec                  
+[  7][TX-S]   4.00-5.00   sec  88.9 MBytes   745 Mbits/sec  135    252 KBytes       
+[  5][RX-S]   5.00-6.00   sec  85.9 MBytes   720 Mbits/sec                  
+[  7][TX-S]   5.00-6.00   sec  89.4 MBytes   750 Mbits/sec   91    262 KBytes       
+[  5][RX-S]   6.00-7.00   sec  89.2 MBytes   749 Mbits/sec                  
+[  7][TX-S]   6.00-7.00   sec  89.6 MBytes   752 Mbits/sec   70    255 KBytes       
+[  5][RX-S]   7.00-8.01   sec  95.1 MBytes   795 Mbits/sec                  
+[  7][TX-S]   7.00-8.01   sec  90.8 MBytes   758 Mbits/sec   93    247 KBytes       
+[  5][RX-S]   8.01-9.00   sec  83.4 MBytes   702 Mbits/sec                  
+[  7][TX-S]   8.01-9.00   sec  92.2 MBytes   777 Mbits/sec   78    270 KBytes       
+[  5][RX-S]   9.00-10.00  sec   108 MBytes   902 Mbits/sec                  
+[  7][TX-S]   9.00-10.00  sec   117 MBytes   982 Mbits/sec  138    243 KBytes       
+[  5][RX-S]  10.00-10.01  sec  1.00 MBytes   722 Mbits/sec                  
+[  7][TX-S]  10.00-10.01  sec   384 KBytes   271 Mbits/sec    0    247 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID][Role] Interval           Transfer     Bitrate         Retr
+[  5][RX-S]   0.00-10.01  sec   895 MBytes   750 Mbits/sec                  receiver
+[  7][TX-S]   0.00-10.01  sec   928 MBytes   777 Mbits/sec  1144             sender
+-----------------------------------------------------------
+Server listening on 5201 (test #4)
+-----------------------------------------------------------
+Accepted connection from 192.168.56.102, port 54998
+[  5] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 55000
+[  7] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 55004
+[ 10] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 55006
+[ 12] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 55014
+[ 14] local 192.168.56.101 port 5201 connected to 192.168.56.102 port 55028
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.00   sec  32.5 MBytes   272 Mbits/sec                  
+[  7]   0.00-1.01   sec  32.4 MBytes   269 Mbits/sec                  
+[ 10]   0.00-1.02   sec  29.6 MBytes   245 Mbits/sec                  
+[ 12]   0.00-1.02   sec  32.2 MBytes   265 Mbits/sec                  
+[ 14]   0.00-1.02   sec  22.6 MBytes   185 Mbits/sec                  
+[SUM]   0.00-1.00   sec   149 MBytes  1.25 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   1.00-2.00   sec  33.9 MBytes   284 Mbits/sec                  
+[  7]   1.01-2.00   sec  35.0 MBytes   296 Mbits/sec                  
+[ 10]   1.02-2.00   sec  28.6 MBytes   244 Mbits/sec                  
+[ 12]   1.02-2.00   sec  25.4 MBytes   217 Mbits/sec                  
+[ 14]   1.02-2.00   sec  33.0 MBytes   283 Mbits/sec                  
+[SUM]   1.00-2.00   sec   156 MBytes  1.31 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   2.00-3.00   sec  32.5 MBytes   273 Mbits/sec                  
+[  7]   2.00-3.00   sec  29.5 MBytes   248 Mbits/sec                  
+[ 10]   2.00-3.00   sec  33.2 MBytes   279 Mbits/sec                  
+[ 12]   2.00-3.00   sec  33.9 MBytes   284 Mbits/sec                  
+[ 14]   2.00-3.00   sec  24.2 MBytes   204 Mbits/sec                  
+[SUM]   2.00-3.00   sec   153 MBytes  1.29 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   3.00-4.00   sec  27.1 MBytes   227 Mbits/sec                  
+[  7]   3.00-4.00   sec  31.0 MBytes   260 Mbits/sec                  
+[ 10]   3.00-4.00   sec  23.2 MBytes   195 Mbits/sec                  
+[ 12]   3.00-4.00   sec  34.4 MBytes   288 Mbits/sec                  
+[ 14]   3.00-4.00   sec  41.5 MBytes   348 Mbits/sec                  
+[SUM]   3.00-4.00   sec   157 MBytes  1.32 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   4.00-5.00   sec  36.9 MBytes   310 Mbits/sec                  
+[  7]   4.00-5.00   sec  30.0 MBytes   252 Mbits/sec                  
+[ 10]   4.00-5.00   sec  28.6 MBytes   240 Mbits/sec                  
+[ 12]   4.00-5.00   sec  38.5 MBytes   323 Mbits/sec                  
+[ 14]   4.00-5.00   sec  19.2 MBytes   162 Mbits/sec                  
+[SUM]   4.00-5.00   sec   153 MBytes  1.29 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   5.00-6.01   sec  27.2 MBytes   227 Mbits/sec                  
+[  7]   5.00-6.01   sec  36.4 MBytes   303 Mbits/sec                  
+[ 10]   5.00-6.01   sec  25.9 MBytes   216 Mbits/sec                  
+[ 12]   5.00-6.01   sec  38.1 MBytes   318 Mbits/sec                  
+[ 14]   5.00-6.01   sec  31.1 MBytes   259 Mbits/sec                  
+[SUM]   5.00-6.01   sec   159 MBytes  1.32 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   6.01-7.00   sec  36.6 MBytes   309 Mbits/sec                  
+[  7]   6.01-7.00   sec  30.1 MBytes   254 Mbits/sec                  
+[ 10]   6.01-7.00   sec  25.0 MBytes   211 Mbits/sec                  
+[ 12]   6.01-7.00   sec  30.8 MBytes   259 Mbits/sec                  
+[ 14]   6.01-7.00   sec  31.8 MBytes   268 Mbits/sec                  
+[SUM]   6.01-7.00   sec   154 MBytes  1.30 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   7.00-8.00   sec  36.1 MBytes   303 Mbits/sec                  
+[  7]   7.00-8.00   sec  25.4 MBytes   213 Mbits/sec                  
+[ 10]   7.00-8.00   sec  28.1 MBytes   236 Mbits/sec                  
+[ 12]   7.00-8.00   sec  33.9 MBytes   285 Mbits/sec                  
+[ 14]   7.00-8.00   sec  29.6 MBytes   249 Mbits/sec                  
+[SUM]   7.00-8.00   sec   153 MBytes  1.29 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   8.00-9.00   sec  53.1 MBytes   445 Mbits/sec                  
+[  7]   8.00-9.00   sec  43.9 MBytes   368 Mbits/sec                  
+[ 10]   8.00-9.00   sec  39.4 MBytes   330 Mbits/sec                  
+[ 12]   8.00-9.00   sec  44.2 MBytes   371 Mbits/sec                  
+[ 14]   8.00-9.00   sec  27.8 MBytes   233 Mbits/sec                  
+[SUM]   8.00-9.00   sec   208 MBytes  1.75 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]   9.00-10.00  sec  45.2 MBytes   379 Mbits/sec                  
+[  7]   9.00-10.01  sec  40.2 MBytes   335 Mbits/sec                  
+[ 10]   9.00-10.01  sec  37.2 MBytes   309 Mbits/sec                  
+[ 12]   9.00-10.01  sec  48.2 MBytes   400 Mbits/sec                  
+[ 14]   9.00-10.01  sec  47.6 MBytes   395 Mbits/sec                  
+[SUM]   9.00-10.00  sec   219 MBytes  1.83 Gbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[  5]  10.00-10.01  sec   256 KBytes   160 Mbits/sec                  
+[  7]  10.01-10.01  sec  0.00 Bytes  0.00 bits/sec                  
+[ 10]  10.01-10.02  sec  0.00 Bytes  0.00 bits/sec                  
+[ 12]  10.01-10.02  sec  0.00 Bytes  0.00 bits/sec                  
+[ 14]  10.01-10.02  sec  0.00 Bytes  0.00 bits/sec                  
+[SUM]  10.00-10.01  sec   256 KBytes   160 Mbits/sec                  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-10.01  sec   362 MBytes   303 Mbits/sec                  receiver
+[  7]   0.00-10.01  sec   334 MBytes   280 Mbits/sec                  receiver
+[ 10]   0.00-10.01  sec   299 MBytes   251 Mbits/sec                  receiver
+[ 12]   0.00-10.01  sec   360 MBytes   301 Mbits/sec                  receiver
+[ 14]   0.00-10.01  sec   308 MBytes   258 Mbits/sec                  receiver
+[SUM]   0.00-10.01  sec  1.62 GBytes  1.39 Gbits/sec                  receiver
+-----------------------------------------------------------
+Server listening on 5201 (test #5)
+-----------------------------------------------------------
+iperf3: interrupt - the server has terminated
+madhumita@madhumita-VirtualBox:~$ 
+
+
+
+

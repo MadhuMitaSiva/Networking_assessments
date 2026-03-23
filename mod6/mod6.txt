@@ -1,0 +1,41 @@
+1. To find the router's mac address ping the default gateway ip
+the arp thus gets the mac address of the router with that default gateway.
+The MAC address is present in the reply packet of the arp
+
+2. pc1 [192.168.2.11]->> Router1<--->Router2<---pc2 [192.168.3.10]
+Once device configuration is done as follows
+192.168.2.1--->Router1------>10.0.0.1
+192.168.2.2--->Router2------>10.0.0.2
+
+ip route 192.168.3.10 255.255.255.0 10.0.0.2
+this command helps to manually provide the static route
+by using tracert 10.0.0.2 we can find the path it travels
+
+3. Network address-> 10.0.0.0/24 into 4 equal subnets
+2^2=4. Therefore 24+2=26 is the subnetmask
+New mask : 255.255.255.196
+Each subnet has 64 addresses including the broadcast and the network address
+
+4. 
+Class classification is based on the first octet
+Class A -> 0xxxxxxx -> subnet 255.0.0.0 ; N=8 bits H=24 bits 
+Class B -> 10xxxxxx -> subnet 255.255.0.0 ; N=16 bits H=16 bits 
+Class C -> 110xxxxx -> subnet 255.255.255.0 ; N=24 bits H=8 bits 
+a) 10.1.1.1 -> Binary of the 1st octet 10 => 00001010 -> Class A -> 10.0.0.0 - 10.255.255.255
+b) 172.16.5.10 -> Binary of the 1st octet 172=> 10101100 -> Class B -> 172.0.0.0 - 172.255.255.255
+c) 192.168.1.5 -> Binary of the 1st octet 192 => 11000000 -> Class C -> 192.0.0.0 - 192.255.255.255
+Since all lie with the range they are private
+
+The private ip is converted into public ip by the nat to connect to the internet
+
+5. 
+Router changes private ip to public ip by the router
+pc(private ip)---switch-----router---ISP----server(200.1.1.2)
+Private ip is assigned to pc 
+private ip (192.168.2.2)------ router --------public ip(200.1.1.1)
+when we ping(200.1.1.2) the server the router by using NAT changes the ip and connects to the server
+
+
+
+
+
