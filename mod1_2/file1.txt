@@ -1,0 +1,3 @@
+This file is present in the machine madhumita with ip-192.168.56.101 machine.
+The file is to be copied to the machine vboxuser with ip-192.168.56.102 machine by using secured shell connection scp(secured copy)
+

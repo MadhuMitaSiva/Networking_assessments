@@ -1,0 +1,73 @@
+1. ARP in Wireshark
+used wireshark to captured arp packets
+in request (broadcast) dest mac will be broadcast address
+while in reply(unicast) the dest mac will be the exact mac address
+in both request and reply scr mac addr remains the same
+
+2. ARP spoofing
+Switch>enable
+Switch#show mac address-table
+          Mac Address Table
+-------------------------------------------
+
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+
+   1    0002.16b2.ea8a    DYNAMIC     Fa0/1
+   1    000a.f3dd.d8a1    DYNAMIC     Fa0/3
+   1    00e0.f90c.205e    DYNAMIC     Fa0/2
+Switch#
+Switch#
+Switch#show mac address-table
+          Mac Address Table
+-------------------------------------------
+
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+
+   1    0002.16b2.ea8a    DYNAMIC     Fa0/1
+   1    000a.f3dd.d8a1    DYNAMIC     Fa0/3
+   1    000a.f3dd.da34    DYNAMIC     Fa0/3
+   1    00e0.f90c.205e    DYNAMIC     Fa0/2
+Switch#
+
+3. Manually config ip
+using -> ifconfig enp0s8 192.166.23.78 -> manually configures ip
+ping 192.166.23.78 -> from the same network will test connectivity by packet transmission
+
+4. DHCP in wireshark
+sudo apt install isc-dhcp-client
+sudo dhclient -r [removes DHCP]
+sudo dhclient [request for a new DHCP connection]
+the packets are captured and analysed.
+
+5. IP address range 192.168.1.0/24
+divide network to 4 subnets
+
+Number of subnets= 4 => 2 (pow) 2	[ _ _ _ _ _ _ _ _ -> * * _ _ _ _ _ _ ] 
+2^6= 64-2 (subtract 000000{for network} and ffffff {for broadcast})
+Therefore 62 address for each subnet
+
+Network		-> Range   -> broadcast
+192.162.1.0/26 -> 1-62	-> 63
+192.162.1.64/26 ->65-126 -> 127
+192.162.1.128/26 -> 129-190 -> 191
+192.162.1.192/26 -> 193-254 -> 255
+
+6. Given 
+a) 10.1.1.1 		b) 172.16.5.10		c) 192.168.1.5
+Class classification is based on the first octet
+Class A -> 0xxxxxxx -> subnet 255.0.0.0 ; N=8 bits H=24 bits 
+Class B -> 10xxxxxx -> subnet 255.255.0.0 ; N=16 bits H=16 bits 
+Class C -> 110xxxxx -> subnet 255.255.255.0 ; N=24 bits H=8 bits 
+a) 10.1.1.1 => Binary of the 1st octet 10 => 00001010 -> Class A -> 10.0.0.0 - 10.255.255.255
+b) 172.16.5.10 => Binary of the 1st octet 172=> 10101100 -> Class B -> 172.0.0.0 - 172.255.255.255
+c) 192.168.1.5 => Binary of the 1st octet 192 => 11000000 -> Class C -> 192.0.0.0 - 192.255.255.255
+
+7. private ip's assigned for pc1 and pc2
+the router inside has one address and the other-side that is connected to the internet has an other ip
+When Pc's have to connect to the internet service provider then the source's private ip is changed to public ip to connect to internet 
+
+
+
+

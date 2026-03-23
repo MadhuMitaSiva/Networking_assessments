@@ -1,0 +1,1 @@
+This is the second file that is present in the folder that is to be copied from vm1 to vm2 checking the folder copy

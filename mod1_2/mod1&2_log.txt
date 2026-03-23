@@ -1,0 +1,163 @@
+1. Copy a folder with multiple file to the destination machine using SCP
+a) Copy a single file
+	madhumita@madhumita-VirtualBox:~$ scp Desktop/assessments/ntwassign/mod1_2/file1.txt vboxuser@192.168.56.102:/home/vboxuser/Desktop
+	vboxuser@192.168.56.102's password: 
+	file1.txt                                     100%  211    63.0KB/s   00:00 
+b) copying a folder with multiple files
+	madhumita@madhumita-VirtualBox:~$ scp -r Desktop/assessments/ntwassign/mod1_2 vboxuser@192.168.56.102:/home/vboxuser/Desktop
+	vboxuser@192.168.56.102's password: 
+	file1.txt                                     100%  211    73.8KB/s   00:00    
+	file2.txt                                     100%  116    28.5KB/s   00:00 
+	
+2. Host FTP and SFTP server and try PUT and GET operations.
+FTP is a file transfer protocol
+PUT command is used to copy the file from host to connected machine
+GET command is used to get the file from connected machine to the host machine
+	
+FTP connection was failed while execution, try to install the ftp once again.
+
+3. Explore Wireshark and packet filters
+	Installed Wireshark and tried getting the tcp packets alone using the packet filter.
+	
+4. Ping and arp
+a) ping
+	madhumita@madhumita-VirtualBox:~$ ping -c5 google.com
+	PING google.com (142.250.77.142) 56(84) bytes of data.
+	64 bytes from lcmaaa-au-in-f14.1e100.net (142.250.77.142): icmp_seq=1 ttl=255 time=23.8 ms
+	64 bytes from lcmaaa-au-in-f14.1e100.net (142.250.77.142): icmp_seq=2 ttl=255 time=27.0 ms
+	64 bytes from lcmaaa-au-in-f14.1e100.net (142.250.77.142): icmp_seq=3 ttl=255 time=25.3 ms
+	64 bytes from lcmaaa-au-in-f14.1e100.net (142.250.77.142): icmp_seq=4 ttl=255 time=26.8 ms
+	64 bytes from lcmaaa-au-in-f14.1e100.net (142.250.77.142): icmp_seq=5 ttl=255 time=25.5 ms
+
+	--- google.com ping statistics ---
+	5 packets transmitted, 5 received, 0% packet loss, time 4090ms
+	rtt min/avg/max/mdev = 23.837/25.687/26.993/1.153 ms
+b) arp
+arp table before ping
+	madhumita@madhumita-VirtualBox:~$ arp -a
+	_gateway (10.0.2.2) at 52:55:0a:00:02:02 [ether] on enp0s3
+ping
+	madhumita@madhumita-VirtualBox:~$ ping -c5 192.168.56.102
+	PING 192.168.56.102 (192.168.56.102) 56(84) bytes of data.
+	64 bytes from 192.168.56.102: icmp_seq=1 ttl=64 time=2.48 ms
+	64 bytes from 192.168.56.102: icmp_seq=2 ttl=64 time=1.17 ms
+	64 bytes from 192.168.56.102: icmp_seq=3 ttl=64 time=1.53 ms
+	64 bytes from 192.168.56.102: icmp_seq=4 ttl=64 time=1.43 ms
+	64 bytes from 192.168.56.102: icmp_seq=5 ttl=64 time=1.24 ms
+
+	--- 192.168.56.102 ping statistics ---
+	5 packets transmitted, 5 received, 0% packet loss, time 4261ms
+	rtt min/avg/max/mdev = 1.167/1.568/2.479/0.473 ms
+arp table after ping
+	madhumita@madhumita-VirtualBox:~$ arp -a
+	? (192.168.56.100) at 08:00:27:d1:df:17 [ether] on enp0s8
+	_gateway (10.0.2.2) at 52:55:0a:00:02:02 [ether] on enp0s3
+	? (192.168.56.102) at 08:00:27:24:73:75 [ether] on enp0s8
+	
+5. What happens when duplicate IP's configured in the network.
+It creates a conflict where the packet is to be send and may cause packet loss, timeout as there is no clear destination.
+This raises a confusing in the arp table where the signal is to be send
+
+
+6. Remote system using Anydesk - experimented to establish connection and connected successfully
+
+7. Default gateway reachable
+Default Gateway
+	madhumita@madhumita-VirtualBox:~$ ip route
+	default via 10.0.2.2 dev enp0s3 proto dhcp src 10.0.2.15 metric 100 
+	10.0.2.0/24 dev enp0s3 proto kernel scope link src 10.0.2.15 metric 100 
+	192.168.56.0/24 dev enp0s8 proto kernel scope link src 192.168.56.101 metric 101 
+
+Checking if reachable
+	madhumita@madhumita-VirtualBox:~$ ping -c5 10.0.2.2
+	PING 10.0.2.2 (10.0.2.2) 56(84) bytes of data.
+	64 bytes from 10.0.2.2: icmp_seq=1 ttl=255 time=1.58 ms
+	64 bytes from 10.0.2.2: icmp_seq=2 ttl=255 time=0.778 ms
+	64 bytes from 10.0.2.2: icmp_seq=3 ttl=255 time=0.925 ms
+	64 bytes from 10.0.2.2: icmp_seq=4 ttl=255 time=0.828 ms
+	64 bytes from 10.0.2.2: icmp_seq=5 ttl=255 time=0.875 ms
+
+	--- 10.0.2.2 ping statistics ---
+	5 packets transmitted, 5 received, 0% packet loss, time 4013ms
+	rtt min/avg/max/mdev = 0.778/0.997/1.581/0.295 ms
+	As ping is successful, the default gateway is reachable
+
+8. iwconfig and ifconfig
+	madhumita@madhumita-VirtualBox:~$ iwconfig
+	lo        no wireless extensions.
+
+	enp0s3    no wireless extensions.
+
+	enp0s8    no wireless extensions.
+
+	madhumita@madhumita-VirtualBox:~$ ifconfig
+	enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+		inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255
+		inet6 fe80::a00:27ff:fea3:70b4  prefixlen 64  scopeid 0x20<link>
+		inet6 fd17:625c:f037:2:a00:27ff:fea3:70b4  prefixlen 64  scopeid 0x0<global>
+		inet6 fd17:625c:f037:2:cc3b:f3dc:5beb:7aae  prefixlen 64  scopeid 0x0<global>
+		ether 08:00:27:a3:70:b4  txqueuelen 1000  (Ethernet)
+		RX packets 99  bytes 21591 (21.5 KB)
+		RX errors 0  dropped 0  overruns 0  frame 0
+		TX packets 270  bytes 31931 (31.9 KB)
+		TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+	enp0s8: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+		inet 192.168.56.101  netmask 255.255.255.0  broadcast 192.168.56.255
+		inet6 fe80::7bb3:c74b:fa52:45b2  prefixlen 64  scopeid 0x20<link>
+		ether 08:00:27:c1:42:f9  txqueuelen 1000  (Ethernet)
+		RX packets 54  bytes 7599 (7.5 KB)
+		RX errors 0  dropped 0  overruns 0  frame 0
+		TX packets 80  bytes 9754 (9.7 KB)
+		TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+	lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+		inet 127.0.0.1  netmask 255.0.0.0
+		inet6 ::1  prefixlen 128  scopeid 0x10<host>
+		loop  txqueuelen 1000  (Local Loopback)
+		RX packets 69  bytes 7504 (7.5 KB)
+		RX errors 0  dropped 0  overruns 0  frame 0
+		TX packets 69  bytes 7504 (7.5 KB)
+		TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+		
+9. Log in to the home router 192.168.1.1 and check for the connected devices
+	Logged in and the connected devices were found and the image in attached in the folder
+	
+10. How DHCP server assigns the IP address to the network?
+DHCP assigns IP through DORA process
+D-> Discover O->Offer R->Request A-> Acknowledgment
+
+D: When a new device is connected to network it discovers the available DHCP server
+O: The Discovered DHCP server responds to the device with the IP address
+R: The device accepts the IP address and informs that it had received an IP from the discovered server
+A: The discovered server sends acknowledgment for finalization of the address.
+
+11. Using terminal, connect to remote machine via SSH and Telnet
+madhumita@madhumita-VirtualBox:~$ ssh vboxuser@192.168.56.102
+vboxuser@192.168.56.102's password: 
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.17.0-19-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+Expanded Security Maintenance for Applications is not enabled.
+
+165 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+Last login: Sun Mar 22 02:34:48 2026 from 192.168.56.101
+vboxuser@Guest:~$ exit
+logout
+Connection to 192.168.56.102 closed.
+madhumita@madhumita-VirtualBox:~$ 
+
+
+
+
+
